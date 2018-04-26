@@ -22,10 +22,26 @@ then
 		if [[ ${array_chess[x]} == 1 ]]
 		then
 			echo -e "\033[31m X方获胜！\033[0m" |tee -a ${thisrecord}
-			exit
+			echo "重新开始请按r，退出游戏请按q"
+			read io 			
+			case $io in
+			r) clear
+			   picture
+			;;
+			q) clear
+			   exit
+			esac
 		else 
 			echo -e "\033[31m O方获胜！\033[0m" |tee -a ${thisrecord}
-			exit
+		  	echo "重新开始请按r，退出游戏请按q"
+                        read io
+                        case $io in
+                        r) clear
+                           picture
+                        ;;
+                        q) clear
+                           exit 
+                        esac
 		fi
 	fi
 fi
@@ -41,7 +57,16 @@ do
 	elif test $var -eq 8
 	then 
 		echo -e "\033[31m 平局！ \033[0m" |tee -a ${thisrecord}
-		exit
+		echo "重新开始请按r，退出游戏请按q"
+                        read io
+                        case $io in
+                        r) clear
+                           picture
+                        ;;
+                        q) clear
+                           exit 
+                        esac
+
 	fi
 done
 putchess
@@ -115,6 +140,7 @@ determine
 
 gameBegin(){
 
+clear
 array_chess=(0 0 0 0 0 0 0 0 0)
 flag=-1
 n=1
@@ -124,4 +150,39 @@ putchess
 
 }
 
-gameBegin
+picture(){
+echo -e "\033[34m ********************* \033[0m"
+echo -e "\033[34m ******X O chess****** \033[0m"
+echo -e "\033[34m ********************* \033[0m"
+echo -e "\033[34m ******1)  play!****** \033[0m"
+echo -e "\033[34m ******2) review!***** \033[0m"
+echo -e "\033[34m ******Q)  quit.****** \033[0m"
+echo -e "\033[34m ********************* \033[0m"
+
+read option
+
+case $option in
+	1)	gameBegin
+	;;
+	2)	review
+	;;
+	q)	exit
+esac
+}
+
+review(){
+
+sstr=`ls -l ./record |sed '1d' | awk {'print NR"."$9'} ` 
+
+echo "$sstr"
+read num
+echo "$sstr" | sed -n ${num}"p" > tem.bak
+cat ./record/`awk -F. {'print $2'} tem.bak`
+rm -f tem.bak
+echo "Any key quit!"
+read hh
+clear
+picture
+
+}
+picture
